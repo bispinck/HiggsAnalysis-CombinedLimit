@@ -136,7 +136,7 @@ bool MarkovChainMC::run(RooWorkspace *w, RooStats::ModelConfig *mc_s, RooStats::
 
   RooFitGlobalKillSentry silence(verbose > 0 ? RooFit::INFO : RooFit::WARNING);
 
-  CloseCoutSentry coutSentry(verbose <= 0); // close standard output and error, so that we don't flood them with minuit messages
+  //CloseCoutSentry coutSentry(verbose <= 0); // close standard output and error, so that we don't flood them with minuit messages
 
   // Get degrees of freedom
   modelNDF_ = mc_s->GetParametersOfInterest()->getSize(); 
@@ -173,7 +173,7 @@ bool MarkovChainMC::run(RooWorkspace *w, RooStats::ModelConfig *mc_s, RooStats::
     limitFromChain(limit, limitErr, *mc_s->GetParametersOfInterest(), *merged, 0);
     std::cout << "Limit from merged chain: " << limit << " +/- " << limitErr << std::endl;
   }
-  coutSentry.clear();
+  //coutSentry.clear();
 
   if (verbose >= 0) {
       std::cout << "\n -- MarkovChainMC -- " << "\n";
@@ -202,9 +202,9 @@ int MarkovChainMC::runOnce(RooWorkspace *w, RooStats::ModelConfig *mc_s, RooStat
   w->loadSnapshot("clean");
   std::auto_ptr<RooFitResult> fit(0);
   if (proposalType_ == FitP || (cropNSigmas_ > 0)) {
-      CloseCoutSentry coutSentry(verbose <= 1); // close standard output and error, so that we don't flood them with minuit messages
+      //CloseCoutSentry coutSentry(verbose <= 1); // close standard output and error, so that we don't flood them with minuit messages
       fit.reset(mc_s->GetPdf()->fitTo(data, RooFit::Save(), RooFit::Minos(runMinos_)));
-      coutSentry.clear();
+      //coutSentry.clear();
       if (fit.get() == 0) { std::cerr << "Fit failed." << std::endl; return false; }
       if (verbose > 1) fit->Print("V");
       if (!noReset_) w->loadSnapshot("clean");

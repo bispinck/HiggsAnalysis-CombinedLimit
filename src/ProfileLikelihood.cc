@@ -107,7 +107,7 @@ ProfileLikelihood::MinimizerSentry::~MinimizerSentry()
 
 bool ProfileLikelihood::run(RooWorkspace *w, RooStats::ModelConfig *mc_s, RooStats::ModelConfig *mc_b, RooAbsData &data, double &limit, double &limitErr, const double *hint) { 
   MinimizerSentry minimizerConfig(minimizerAlgo_, minimizerTolerance_);
-  CloseCoutSentry sentry(verbose < 0);
+  //CloseCoutSentry sentry(verbose < 0);
 
   RooRealVar *r = dynamic_cast<RooRealVar *>(mc_s->GetParametersOfInterest()->first());
   bool success = false;
@@ -132,7 +132,7 @@ bool ProfileLikelihood::run(RooWorkspace *w, RooStats::ModelConfig *mc_s, RooSta
         }
       }
       if (preFit_) {
-        CloseCoutSentry sentry(verbose < 2);
+        //CloseCoutSentry sentry(verbose < 2);
         RooFitResult *res = mc_s->GetPdf()->fitTo(data, RooFit::Save(1), RooFit::Minimizer("Minuit2"));
         if (res == 0 || res->covQual() != 3 || res->edm() > minimizerTolerance_) {
             if (verbose > 1) std::cout << "Fit failed (covQual " << (res ? res->covQual() : -1) << ", edm " << (res ? res->edm() : 0) << ")" << std::endl;
@@ -185,7 +185,7 @@ bool ProfileLikelihood::runLimit(RooWorkspace *w, RooStats::ModelConfig *mc_s, R
   RooRealVar *r = dynamic_cast<RooRealVar *>(poi.first());
   double rMax = r->getMax();
   bool success = false;
-  CloseCoutSentry coutSentry(verbose <= 1); // close standard output and error, so that we don't flood them with minuit messages
+  //CloseCoutSentry coutSentry(verbose <= 1); // close standard output and error, so that we don't flood them with minuit messages
 
   while (!success) {
     ProfileLikelihoodCalculator plcB(data, *mc_s, 1.0-cl);
@@ -225,7 +225,7 @@ bool ProfileLikelihood::runLimit(RooWorkspace *w, RooStats::ModelConfig *mc_s, R
         delete c1;
     }
   }
-  coutSentry.clear();
+  ////coutSentry.clear();
   if (verbose >= 0) {
       if (success) {
         std::cout << "\n -- Profile Likelihood -- " << "\n";
@@ -250,7 +250,7 @@ bool ProfileLikelihood::runSignificance(RooWorkspace *w, RooStats::ModelConfig *
   nullParamValues.addClone(*r); 
   plcS.SetNullParameters(nullParamValues);
 
-  CloseCoutSentry coutSentry(verbose <= 1); // close standard output and error, so that we don't flood them with minuit messages
+  //CloseCoutSentry coutSentry(verbose <= 1); // close standard output and error, so that we don't flood them with minuit messages
 
   if (bruteForce_) {
       double q0 = -1;
@@ -270,7 +270,7 @@ bool ProfileLikelihood::runSignificance(RooWorkspace *w, RooStats::ModelConfig *
       limit = result->Significance();
       if (uncapped_ && r->getVal() < signalForSignificance_) limit = -limit;
   }
-  coutSentry.clear();
+  //coutSentry.clear();
   if (limit == 0 && signbit(limit)) {
       //..... This is not an error, it just means we have a deficit of events.....
       std::cerr << "The minimum of the likelihood is for r <= " << signalForSignificance_ << ", so the significance is zero" << std::endl;
